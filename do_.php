@@ -36,7 +36,16 @@
                         </div>
                         <div id="collapse<?= $i ?>" class="collapse" aria-labelledby="heading<?= $i ?>" data-parent="#accordionExample">
                             <div class="card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                <?php
+                                $curls = curl_init();
+                                curl_setopt_array($curls, [
+                                    CURLOPT_RETURNTRANSFER => 1,
+                                    CURLOPT_HEADER => "X-Key:ce93a1c4-95f2-464b-ab21-905ac13b0d58",
+                                    CURLOPT_URL => 'https://api.binaryedge.io/v2/query/score/ip/'. $resp['matches'][$i]['ip_str']
+                                ]);
+                                $resps = json_decode(curl_exec($curls), true);
+                                curl_close($curl);
+                                ?>
                             </div>
                         </div>
                     </div>
