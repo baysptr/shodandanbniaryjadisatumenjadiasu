@@ -15,7 +15,7 @@
         <div class="mt-5">
             <form action="do_.php" method="post">
                 <div class="form-group">
-                    <label>Email address</label>
+                    <label>Model / Merks</label>
                     <input type="text" class="form-control" name="model">
                     <small class="form-text text-muted">Masukan Model / Merk perangkat target. Ex: TP-LINK. <strong>NB: Jangan gunakan spasi</strong></small>
                 </div>
