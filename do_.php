@@ -25,7 +25,7 @@
                 ]);
                 $resp = json_decode(curl_exec($curl), true);
                 curl_close($curl);
-                for($i=0; $i<count($resp['matches']); $i++){?>
+                for($i=0; $i<4; $i++){?>
                     <div class="card">
                         <div class="card-header" id="heading<?= $i ?>">
                             <h2 class="mb-0">
@@ -40,12 +40,26 @@
                                 $curls = curl_init();
                                 curl_setopt_array($curls, [
                                     CURLOPT_RETURNTRANSFER => 1,
-                                    CURLOPT_HEADER => "X-Key:ce93a1c4-95f2-464b-ab21-905ac13b0d58",
+                                    CURLOPT_HTTPHEADER => ["X-Key:ce93a1c4-95f2-464b-ab21-905ac13b0d58"],
                                     CURLOPT_URL => 'https://api.binaryedge.io/v2/query/score/ip/'. $resp['matches'][$i]['ip_str']
                                 ]);
                                 $resps = json_decode(curl_exec($curls), true);
                                 curl_close($curl);
                                 ?>
+                                <table class="table">
+                                    <tr>
+                                        <td>Score</td>
+                                        <td>Open Port</td>
+                                        <td>Score CVE</td>
+                                        <td>Hackable</td>
+                                    </tr>
+                                    <tr>
+                                        <td><?= $resps['normalized_ip_score'] ?></td>
+                                        <td><? var_dump($resps['results_detailed']['ports']['open']) ?></td>
+                                        <td><?= $resps['normalized_ip_score_detailed']['cve'] ?></td>
+                                        <td><?= ($resps['normalized_ip_score_detailed']['cve'] > 51) ? "POSITIVE" : "NEGATIVE" ?></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
