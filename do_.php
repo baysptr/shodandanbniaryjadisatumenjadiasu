@@ -55,7 +55,13 @@
                                     </tr>
                                     <tr>
                                         <td><?= $resps['normalized_ip_score'] ?></td>
-                                        <td><? var_dump($resps['results_detailed']['ports']['open']) ?></td>
+                                        <td>
+                                            <?php
+                                            foreach ($resps['results_detailed']['ports']['open'] as $key => $val) {
+                                                echo $val . '; ';
+                                            }
+                                            ?>
+                                        </td>
                                         <td><?= $resps['normalized_ip_score_detailed']['cve'] ?></td>
                                         <td><?= ($resps['normalized_ip_score_detailed']['cve'] > 51) ? "POSITIVE" : "NEGATIVE" ?></td>
                                     </tr>
