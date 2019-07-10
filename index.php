@@ -20,6 +20,14 @@
                     <small class="form-text text-muted">Masukan Model / Merk perangkat target. Ex: TP-LINK. <strong>NB: Jangan gunakan spasi</strong></small>
                 </div>
                 <button type="submit" class="btn btn-primary">Cari</button>
+            </form><br/>
+            <form action="do_.php" method="post">
+                <div class="form-group">
+                    <label>Check IP anda disini</label>
+                    <input type="text" class="form-control" name="model">
+                    <small class="form-text text-muted">Masukan IP perangkat anda. Ex: 80.211.184.148. <strong>NB: Menggunakan pattern IP pada umumnya</strong></small>
+                </div>
+                <button type="submit" class="btn btn-primary">Cari</button>
             </form>
         </div>
     </div>
