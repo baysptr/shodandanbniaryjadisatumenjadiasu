@@ -17,7 +17,25 @@
             <h3>Model / Merk perangkat Target: <strong><?= $_POST['model'] ?></strong></h3><hr/>
             <div class="accordion" id="accordionExample">
                 <?php
-                $model = $_POST['model'];
+                date_default_timezone_set("Asia/Jakarta");
+                include "config.php";
+
+                $model = strtoupper($_POST['model']);
+                $id_shodan = "";
+
+                $r = mysqli_query($conn, "select * from shodan where model = '$model'");
+                $c = mysqli_num_rows($r);
+                if($c > 0){
+                    $h = mysqli_fetch_assoc($r);
+                    $id_shodan = $h['id'];
+                }else{
+                    $t = date("Y-m-d H:i:s");
+                    mysqli_query($conn, "insert into shodan (model, tgl_update) values ('$model', '$t')");
+                    $q = mysqli_query($conn, "select * from shodan where model = '$model'");
+                    $w = mysqli_num_rows($q);
+                    $id_shodan = $w['id'];
+                }
+
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_RETURNTRANSFER => 1,
@@ -52,6 +70,7 @@
                                         <td>Open Port</td>
                                         <td>Score CVE</td>
                                         <td>Hackable</td>
+                                        <td>&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td><?= $resps['normalized_ip_score'] ?></td>
@@ -64,12 +83,12 @@
                                         </td>
                                         <td><?= $resps['normalized_ip_score_detailed']['cve'] ?></td>
                                         <td><?= ($resps['normalized_ip_score_detailed']['cve'] > 51) ? "POSITIVE" : "NEGATIVE" ?></td>
+                                        <td><a href="get.php?ip=<?= $resp['matches'][$i]['ip_str'] ?>">Detail</a> </td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
-<!--echo "<tr><td>".$i."</td><td>".$resp['matches'][$i]['domains'][0]."</td><td>".$resp['matches'][$i]['ip_str']."</td></tr>";-->
                 <?php } ?>
             </div>
         </div>
