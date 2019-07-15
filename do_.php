@@ -22,6 +22,7 @@
 
                 $model = strtoupper($_POST['model']);
                 $id_shodan = "";
+                $t = date("Y-m-d H:i:s");
 
                 $r = mysqli_query($conn, "select * from shodan where model = '$model'");
                 $c = mysqli_num_rows($r);
@@ -29,17 +30,16 @@
                     $h = mysqli_fetch_assoc($r);
                     $id_shodan = $h['id'];
                 }else{
-                    $t = date("Y-m-d H:i:s");
                     mysqli_query($conn, "insert into shodan (model, tgl_update) values ('$model', '$t')");
                     $q = mysqli_query($conn, "select * from shodan where model = '$model'");
-                    $w = mysqli_num_rows($q);
+                    $w = mysqli_fetch_assoc($q);
                     $id_shodan = $w['id'];
                 }
 
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_URL => 'https://api.shodan.io/shodan/host/search?key=ON7eVr60VrpxxWlVt1pFxkcU9kGNEUqi&query='.$model
+                    CURLOPT_URL => 'https://api.shodan.io/shodan/host/search?key=ON7eVr60VrpxxWlVt1pFxkcU9kGNEUqi&query='.$_POST['model']
                 ]);
                 $resp = json_decode(curl_exec($curl), true);
                 curl_close($curl);
@@ -55,14 +55,26 @@
                         <div id="collapse<?= $i ?>" class="collapse" aria-labelledby="heading<?= $i ?>" data-parent="#accordionExample">
                             <div class="card-body">
                                 <?php
-                                $curls = curl_init();
-                                curl_setopt_array($curls, [
-                                    CURLOPT_RETURNTRANSFER => 1,
-                                    CURLOPT_HTTPHEADER => ["X-Key:ce93a1c4-95f2-464b-ab21-905ac13b0d58"],
-                                    CURLOPT_URL => 'https://api.binaryedge.io/v2/query/score/ip/'. $resp['matches'][$i]['ip_str']
-                                ]);
-                                $resps = json_decode(curl_exec($curls), true);
-                                curl_close($curl);
+                                $ips = $resp['matches'][$i]['ip_str'];
+                                $q = mysqli_query($conn, "select * from edbinary where ips = '$ips'");
+                                $qq = mysqli_num_rows($q);
+                                if($qq > 0){
+                                    $s = mysqli_fetch_assoc($q);
+//                                    print_r($s);
+                                    $resps = json_decode($s['file_json'], true);
+                                }else{
+                                    $curls = curl_init();
+                                    curl_setopt_array($curls, [
+                                        CURLOPT_RETURNTRANSFER => 1,
+                                        CURLOPT_HTTPHEADER => ["X-Key:ce93a1c4-95f2-464b-ab21-905ac13b0d58"],
+                                        CURLOPT_URL => 'https://api.binaryedge.io/v2/query/score/ip/'. $ips
+                                    ]);
+//                                    $resps = json_decode(curl_exec($curls), true);
+                                    $resps = curl_exec($curls);
+                                    curl_close($curls);
+                                    $y = mysqli_query($conn, "insert into edbinary (id_shodan, ips, file_json, tgl_update) values ('$id_shodan', '$ips', '$resps', '$t')");
+                                    $resps = json_decode($resps, true);
+                                }
                                 ?>
                                 <table class="table">
                                     <tr>

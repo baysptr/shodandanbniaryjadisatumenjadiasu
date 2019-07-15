@@ -9,7 +9,7 @@ curl_setopt_array($curls, [
     CURLOPT_URL => 'https://api.binaryedge.io/v2/query/score/ip/'. $ip
 ]);
 $resps = json_decode(curl_exec($curls), true);
-curl_close($curl);
+curl_close($curls);
 
 echo "<pre>";
 print_r($resps);
